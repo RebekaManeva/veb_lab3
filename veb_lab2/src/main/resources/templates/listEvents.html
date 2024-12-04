@@ -1,0 +1,109 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Event Booking page - Welcome and choose an Event</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to our Event Booking App</h1>
+</header>
+<main>
+    <div th:if="${hasError}">
+        <div class="alert alert-danger">
+            <p th:text="${error}"></p>
+        </div>
+    </div>
+
+
+    <h2>Search Events</h2>
+    <form th:action="@{/events/searchevent}" method="get">
+        <label for="searchText">Event Name Contains:</label>
+        <input type="text" id="searchText" name="searchText"><br/><br/>
+
+        <label for="minRating">Minimum Rating:</label>
+        <input type="number" id="minRating" name="minRating" min="0" step="0.1"><br/><br/>
+
+        <input type="submit" value="Search">
+
+
+    </form>
+
+
+    <h2>Choose an Event:</h2>
+
+    <div>
+
+        <form th:method="POST" th:action="@{'/eventbooking/bookevent'}">
+            <div th:each="event : ${events}">
+
+                <input type="radio" name="eventId" th:value="${event.id}" required>
+                Name: <span th:text="${event.name}">Event Name</span>,
+                Description: <span th:text="${event.description}">Description</span>,
+                Rating: <span th:text="${event.popularityScore}">0.0</span>,
+                Location: <span th:text="${event.location?.name}">No Location</span>
+                <br/>
+            </div>
+
+
+            <h2>Choose Number of Tickets:</h2>
+            <input type="number" name="numTickets" min="1" max="10" required><br/><br/>
+            <input type="submit" value="Submit Booking">
+        </form>
+
+        <h2>Table of events</h2>
+        <!-- Delete and Edit -->
+        <div class="container mb-5">
+            <div class="col-12 table-responsive" th:if="${events.size() > 0}">
+                <table class="table table-striped table-bordered w-full border">
+                    <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Rating</th>
+                        <th>Location</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text="${event.name}">Event Name</td>
+                        <td th:text="${event.description}">Description</td>
+                        <td th:text="${event.popularityScore}">0.0</td>
+                        <td th:text="${event.location?.name}">No Location</td>
+                        <td class="text-right">
+                            <form th:method="delete" th:action="@{'/events/delete/{id}' (id=${event.id})}"
+                                  style="display:inline;">
+                                <input type="submit" class="btn btn-sm btn-danger" value="Delete">
+                            </form>
+                            <form th:method="get" th:action="@{'/events/edit-form/{id}' (id=${event.id})}"
+                                  style="display:inline;">
+                                <input type="submit" class="btn btn-sm" value="Edit">
+                            </form>
+                            <form th:method="get" th:action="@{'/events/details/{id}' (id=${event.id})}"
+                                  style="display:inline;">
+                                <input type="submit" class="btn btn-sm" value="Details">
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <form th:method="get" th:action="@{'/events/add-event'}"
+              style="display:inline;">
+            <input type="submit" class="btn btn-sm" value="Add new event">
+        </form>
+    </div>
+
+</main>
+</body>
+</html>

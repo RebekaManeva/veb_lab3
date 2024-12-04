@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Details</title>
+</head>
+<body>
+
+<h3>Event: <span th:text="${event.getName()}">Event Name</span></h3>
+
+<div th:each="booking : ${bookings}"
+     th:if="${booking.getEventName() == event.getName()}">
+    <h3>Attendee Name: <span th:text="${booking.getAttendeeName()}">Attendee Name</span></h3>
+    <ol>Number of tickets: <span th:text="${booking.getNumberOfTickets()}">Num</span></ol>
+    <ol>Attendee address: <span th:text="${booking.getAttendeeAddress()}">Attendee Address</span></ol>
+    <br/>
+</div>
+<br>
+<form th:method="get" th:action="@{'/events'}">
+    <input type="submit" value="Back to Events">
+</form>
+
+</body>
+</html>
